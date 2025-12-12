@@ -43,6 +43,7 @@ A robust, production-ready REST API for managing employee salaries, built with *
 ├── .gitignore
 ├── README.md
 └── requirements.txt
+```
 
 ## 🏃‍♂️ How to Run
 
