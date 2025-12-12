@@ -49,7 +49,7 @@ A robust, production-ready REST API for managing employee salaries, built with *
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/incubyte-hiring/incubyte-sm-kata-kalpan-ag
+    git clone https://github.com/kalpan-ag/Incubyte-Salary-Management.git
     cd incubyte-salary-kata
     ```
 
