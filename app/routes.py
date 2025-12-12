@@ -6,8 +6,18 @@ from . import models, schemas, database
 router = APIRouter()
 
 # --- CRUD Operations ---
+
 @router.post("/employees/", response_model=schemas.Employee, tags=["Employees"])
 def create_employee(employee: schemas.EmployeeCreate, db: Session = Depends(database.get_db)):
+    """
+    Create a new employee record.
+    
+    Args:
+        employee: The employee data (name, title, country, salary).
+    
+    Returns:
+        The created employee object with assigned ID.
+    """
     db_employee = models.Employee(**employee.model_dump())
     db.add(db_employee)
     db.commit()
@@ -16,6 +26,7 @@ def create_employee(employee: schemas.EmployeeCreate, db: Session = Depends(data
 
 @router.get("/employees/{employee_id}", response_model=schemas.Employee, tags=["Employees"])
 def read_employee(employee_id: int, db: Session = Depends(database.get_db)):
+    """Retrieve details of a specific employee by ID."""
     db_employee = db.query(models.Employee).filter(models.Employee.id == employee_id).first()
     if db_employee is None:
         raise HTTPException(status_code=404, detail="Employee not found")
@@ -23,6 +34,7 @@ def read_employee(employee_id: int, db: Session = Depends(database.get_db)):
 
 @router.put("/employees/{employee_id}", response_model=schemas.Employee, tags=["Employees"])
 def update_employee(employee_id: int, employee: schemas.EmployeeCreate, db: Session = Depends(database.get_db)):
+    """Update an existing employee's details."""
     db_employee = db.query(models.Employee).filter(models.Employee.id == employee_id).first()
     if db_employee is None:
         raise HTTPException(status_code=404, detail="Employee not found")
@@ -36,6 +48,7 @@ def update_employee(employee_id: int, employee: schemas.EmployeeCreate, db: Sess
 
 @router.delete("/employees/{employee_id}", tags=["Employees"])
 def delete_employee(employee_id: int, db: Session = Depends(database.get_db)):
+    """Delete an employee record permanently."""
     db_employee = db.query(models.Employee).filter(models.Employee.id == employee_id).first()
     if db_employee is None:
         raise HTTPException(status_code=404, detail="Employee not found")
@@ -45,8 +58,17 @@ def delete_employee(employee_id: int, db: Session = Depends(database.get_db)):
     return {"detail": "Employee deleted"}
 
 # --- Business Logic ---
+
 @router.get("/employees/{employee_id}/salary", response_model=schemas.SalaryResponse, tags=["Salary"])
 def calculate_salary(employee_id: int, db: Session = Depends(database.get_db)):
+    """
+    Calculate gross, deduction, and net salary based on country tax rules.
+    
+    Rules:
+    - India: 10% deduction
+    - USA: 12% deduction
+    - Others: 0% deduction
+    """
     db_employee = db.query(models.Employee).filter(models.Employee.id == employee_id).first()
     if db_employee is None:
         raise HTTPException(status_code=404, detail="Employee not found")
@@ -67,8 +89,10 @@ def calculate_salary(employee_id: int, db: Session = Depends(database.get_db)):
     }
 
 # --- Metrics ---
+
 @router.get("/metrics/country", response_model=schemas.CountryMetricResponse, tags=["Metrics"])
 def get_country_metrics(country: str, db: Session = Depends(database.get_db)):
+    """Get salary statistics (min, max, avg, count) for a specific country."""
     stats = db.query(
         func.count(models.Employee.id),
         func.min(models.Employee.salary),
@@ -89,6 +113,7 @@ def get_country_metrics(country: str, db: Session = Depends(database.get_db)):
 
 @router.get("/metrics/job_title", response_model=schemas.JobMetricResponse, tags=["Metrics"])
 def get_job_metrics(job_title: str, db: Session = Depends(database.get_db)):
+    """Get average salary and count for a specific job title."""
     stats = db.query(
         func.count(models.Employee.id),
         func.avg(models.Employee.salary)

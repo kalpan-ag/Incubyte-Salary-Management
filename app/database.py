@@ -1,20 +1,19 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
-import os
+from .config import settings
 
-# Allow DB URL to be set via env var, default to sqlite file
-SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./salary_kata.db")
-
+# Create engine using the config
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, 
-    # check_same_thread is only needed for SQLite
-    connect_args={"check_same_thread": False} if "sqlite" in SQLALCHEMY_DATABASE_URL else {}
+    settings.database_url,
+    connect_args={"check_same_thread": False} if "sqlite" in settings.database_url else {}
 )
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
 
 def get_db():
+    """Dependency provider for database sessions."""
     db = SessionLocal()
     try:
         yield db

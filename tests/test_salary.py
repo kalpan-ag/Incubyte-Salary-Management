@@ -1,9 +1,7 @@
 from fastapi.testclient import TestClient
 from app.main import app
 
-client = TestClient(app)
-
-def test_salary_calculation_india():
+def test_salary_calculation_india(client):
     # 1. Create an employee in India
     payload = {
         "full_name": "Rahul Dravid",
@@ -25,7 +23,7 @@ def test_salary_calculation_india():
     assert data["deduction"] == 1000.0
     assert data["net_salary"] == 9000.0
 
-def test_salary_calculation_usa():
+def test_salary_calculation_usa(client):
     # 1. Create an employee in USA
     payload = {
         "full_name": "John Smith",
@@ -43,7 +41,7 @@ def test_salary_calculation_usa():
     assert response.json()["deduction"] == 1200.0
     assert response.json()["net_salary"] == 8800.0
 
-def test_salary_calculation_other():
+def test_salary_calculation_other(client):
     # 1. Create an employee in Germany (Other)
     payload = {
         "full_name": "Hans Muller",

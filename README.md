@@ -1,20 +1,48 @@
 # Incubyte Salary Management Kata
 
-A robust, production-ready REST API for managing employee salaries, built with **FastAPI** and **SQLAlchemy**. This project strictly follows **Test-Driven Development (TDD)** principles.
+A robust, production-ready REST API for managing employee salaries, built with **FastAPI** and **SQLAlchemy**. This project strictly follows **Test-Driven Development (TDD)** principles and adheres to **12-Factor App** methodology.
 
 ## 🚀 Features
 
-* **Employee CRUD**: Full Create, Read, Update, Delete operations for employee records.
-* **Salary Calculation**: Dynamic tax deduction logic based on country (India, US, others).
-* **Salary Metrics**: Aggregated insights (Min, Max, Avg) by Country and Job Title.
-* **Production Ready**: Uses Pydantic V2 for validation and SQLAlchemy 2.0 for database interactions.
+* **Employee CRUD**: Complete lifecycle management (Create, Read, Update, Delete) for employee records.
+* **Salary Calculation**: Dynamic tax deduction logic based on country:
+    * **India**: 10% deduction
+    * **United States**: 12% deduction
+    * **Others**: 0% deduction
+* **Salary Metrics**: Real-time aggregation (Min, Max, Avg) via optimized SQL queries.
+* **Robust Architecture**:
+    * **In-Memory Testing**: Tests run on isolated SQLite instances (`:memory:`) using `StaticPool` to ensure zero side effects and high speed.
+    * **Configuration**: Type-safe, environment-based configuration via `pydantic-settings`.
+    * **Documentation**: Fully documented code and integrated Swagger UI.
 
 ## 🛠️ Tech Stack
 
 * **Language**: Python 3.10+
 * **Framework**: FastAPI
 * **Database**: SQLite (SQLAlchemy ORM)
-* **Testing**: Pytest + HTTPX (Async/Sync testing)
+* **Testing**: Pytest + HTTPX
+* **Configuration**: Pydantic Settings
+
+## 📂 Project Structure
+
+```text
+.
+├── app
+│   ├── __init__.py
+│   ├── config.py       # Pydantic settings & env management
+│   ├── database.py     # DB connection & dependency injection
+│   ├── main.py         # App entry point & configuration
+│   ├── models.py       # SQLAlchemy database models
+│   ├── routes.py       # API endpoints & business logic
+│   └── schemas.py      # Pydantic V2 schemas for validation
+├── tests
+│   ├── conftest.py     # Test fixtures, StaticPool & in-memory DB setup
+│   ├── test_employee_crud.py
+│   ├── test_metrics.py
+│   └── test_salary.py
+├── .gitignore
+├── README.md
+└── requirements.txt
 
 ## 🏃‍♂️ How to Run
 

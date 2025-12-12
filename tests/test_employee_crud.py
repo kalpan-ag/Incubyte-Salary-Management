@@ -1,9 +1,7 @@
 from fastapi.testclient import TestClient
 from app.main import app
 
-client = TestClient(app)
-
-def test_create_employee():
+def test_create_employee(client):
     payload = {
         "full_name": "Jane Doe",
         "job_title": "Software Engineer",
@@ -19,7 +17,7 @@ def test_create_employee():
     assert data["id"] is not None  # Ensure an ID was assigned
     assert data["country"] == "India"
     
-def test_read_employee():
+def test_read_employee(client):
     # First create an employee
     payload = {
         "full_name": "John Read",
@@ -35,7 +33,7 @@ def test_read_employee():
     assert response.status_code == 200
     assert response.json()["full_name"] == "John Read"
 
-def test_update_employee():
+def test_update_employee(client):
     # Create
     payload = {"full_name": "Old Name", "job_title": "Dev", "country": "UK", "salary": 40000.0}
     create_res = client.post("/employees/", json=payload)
@@ -49,7 +47,7 @@ def test_update_employee():
     assert response.json()["full_name"] == "New Name"
     assert response.json()["salary"] == 80000.0
 
-def test_delete_employee():
+def test_delete_employee(client):
     # Create
     payload = {"full_name": "To Delete", "job_title": "Temp", "country": "Canada", "salary": 30000.0}
     create_res = client.post("/employees/", json=payload)

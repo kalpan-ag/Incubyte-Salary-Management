@@ -1,9 +1,7 @@
 from fastapi.testclient import TestClient
 from app.main import app
 
-client = TestClient(app)
-
-def test_metrics_by_country():
+def test_metrics_by_country(client):
     # Setup data: 2 Indians, 1 American
     # Note: We use unique names to avoid clashes if DB persists across tests
     client.post("/employees/", json={"full_name": "Dev A", "job_title": "Dev", "country": "India", "salary": 1000.0})
@@ -25,7 +23,7 @@ def test_metrics_by_country():
     assert "max_salary" in data
     assert "avg_salary" in data
 
-def test_metrics_by_job_title():
+def test_metrics_by_job_title(client):
     # Setup data
     client.post("/employees/", json={"full_name": "Dev X", "job_title": "Specialist", "country": "UK", "salary": 3000.0})
     client.post("/employees/", json={"full_name": "Dev Y", "job_title": "Specialist", "country": "UK", "salary": 4000.0})
